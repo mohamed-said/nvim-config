@@ -19,6 +19,14 @@ return {
 		config = function()
 			-- This is your opts table
 			require("telescope").setup({
+				pickers = {
+					live_grep = {
+						on_input_filter_cb = function(query)
+							-- Replace spaces with `.*` for regex matching
+							return query:gsub(" ", ".*")
+						end,
+					},
+				},
 				extensions = {
 					["ui-select"] = {
 						require("telescope.themes").get_dropdown({

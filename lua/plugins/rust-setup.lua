@@ -37,5 +37,18 @@ return {
 			-- DAP configuration
 			dap = {},
 		}
+
+		vim.keymap.set(
+			"n",
+			"<leader>tw",
+			":RustAnalyzer target x86_64-pc-windows-gnu<CR>",
+			{ noremap = true, silent = true }
+		)
+		vim.keymap.set(
+			"n",
+			"<leader>tm",
+			":RustAnalyzer target aarch64-apple-darwin<CR>",
+			{ noremap = true, silent = true }
+		)
 	end,
 }

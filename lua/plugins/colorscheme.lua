@@ -33,8 +33,20 @@ return {
 			vim.cmd([[colorscheme tokyonight-night]])
 		end,
 	},
+	{ "EdenEast/nightfox.nvim" },
 	{
 		"ryanoasis/vim-devicons",
-		config = function() end,
+		config = function()
+			require("nightfox").setup({
+				options = {
+					styles = {
+						comments = "italic",
+						keywords = "bold",
+						types = "italic,bold",
+					},
+				},
+			})
+			-- vim.cmd([[colorscheme carbonfox]])
+		end,
 	},
 }

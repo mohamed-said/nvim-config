@@ -50,6 +50,9 @@ return {
 					},
 				},
 			})
+			lspconfig.taplo.setup({
+				capabilities = capabilities
+			})
 			vim.lsp.inlay_hint.enable(true)
 			vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
 			vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})

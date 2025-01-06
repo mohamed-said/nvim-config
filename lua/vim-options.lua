@@ -35,6 +35,8 @@ vim.cmd("set completeopt=menuone,noinsert,noselect")
 -- Avoid showing extra messages when using completion
 vim.cmd("set shortmess+=c")
 
+vim.o.termguicolors = true
+
 vim.g.airline_theme = "badwolf"
 vim.g["airline#extensions#tabline#enabled"] = 1
 vim.g.airline_powerline_fonts = 1
@@ -57,6 +59,11 @@ vim.keymap.set("n", "c[", "ci[", { noremap = true, silent = true })
 vim.keymap.set("n", "c{", "ci{", { noremap = true, silent = true })
 vim.keymap.set("n", "c<", "ci<", { noremap = true, silent = true })
 
+-- Inlay Hints
+vim.keymap.set("n", "<leader>i", function()
+	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ 0 }), { 0 })
+end)
+
 -- Diagnostics
 vim.api.nvim_set_keymap(
 	"n",
@@ -66,6 +73,41 @@ vim.api.nvim_set_keymap(
 )
 vim.api.nvim_set_keymap("n", "<space>ne", "<cmd>lua vim.diagnostic.goto_next()<CR>", {})
 vim.api.nvim_set_keymap("n", "<space>pe", "<cmd>lua vim.diagnostic.goto_prev()<CR>", {})
+
+-- HexDump
+vim.keymap.set("n", "<leader>hd", ":%!xxd<CR>", { noremap = true, silent = true })
+
+vim.api.nvim_create_user_command("LualineTheme", function(opts)
+	local lualine = require("lualine")
+	local config = lualine.get_config() -- Retrieve the current configuration
+	config.options.theme = opts.args -- Update the theme
+	lualine.setup(config) -- Apply the updated configuration
+end, { nargs = 1 })
+
+local function show_function_usages()
+	local params = vim.lsp.util.make_position_params()
+	vim.lsp.buf_request(0, "textDocument/references", params, function(err, result, ctx, config)
+		if err then
+			vim.notify("Error finding references: " .. err.message, vim.log.levels.ERROR)
+			return
+		end
+		if not result or vim.tbl_isempty(result) then
+			vim.notify("No usages found", vim.log.levels.INFO)
+			return
+		end
+		-- Show results in the quickfix list
+		vim.lsp.util.set_qflist(vim.lsp.util.locations_to_items(result))
+		vim.cmd("copen")
+	end)
+end
+
+-- Map the function to a keybinding
+vim.api.nvim_set_keymap(
+	"n",
+	"<leader>fu",
+	"<cmd>lua show_function_usages()<CR>",
+	{ noremap = true, silent = true, desc = "Find usages of the function under the cursor" }
+)
 
 vim.opt.termguicolors = true
 
