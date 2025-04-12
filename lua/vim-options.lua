@@ -3,7 +3,6 @@ vim.cmd("set cursorline")
 
 vim.cmd("set number")
 
-vim.wo.relativenumber = true
 
 vim.cmd("set ruler")
 vim.cmd("set wildmenu")
@@ -35,7 +34,9 @@ vim.cmd("set completeopt=menuone,noinsert,noselect")
 -- Avoid showing extra messages when using completion
 vim.cmd("set shortmess+=c")
 
-vim.o.termguicolors = true
+vim.opt.termguicolors = true
+
+vim.wo.relativenumber = true
 
 vim.g.airline_theme = "badwolf"
 vim.g["airline#extensions#tabline#enabled"] = 1
@@ -84,23 +85,6 @@ vim.api.nvim_create_user_command("LualineTheme", function(opts)
 	lualine.setup(config) -- Apply the updated configuration
 end, { nargs = 1 })
 
-local function show_function_usages()
-	local params = vim.lsp.util.make_position_params()
-	vim.lsp.buf_request(0, "textDocument/references", params, function(err, result, ctx, config)
-		if err then
-			vim.notify("Error finding references: " .. err.message, vim.log.levels.ERROR)
-			return
-		end
-		if not result or vim.tbl_isempty(result) then
-			vim.notify("No usages found", vim.log.levels.INFO)
-			return
-		end
-		-- Show results in the quickfix list
-		vim.lsp.util.set_qflist(vim.lsp.util.locations_to_items(result))
-		vim.cmd("copen")
-	end)
-end
-
 -- Map the function to a keybinding
 vim.api.nvim_set_keymap(
 	"n",
@@ -109,7 +93,22 @@ vim.api.nvim_set_keymap(
 	{ noremap = true, silent = true, desc = "Find usages of the function under the cursor" }
 )
 
-vim.opt.termguicolors = true
+-- Colorscheme Switch
+vim.api.nvim_create_user_command("Lightmode", function()
+  vim.cmd("colorscheme lightning") -- Example command
+  vim.cmd("LualineTheme ayu_light") -- Another example command
+end, {})
+
+vim.api.nvim_set_keymap("n", "<leader>L", ":Lightmode<CR>", { noremap = true, silent = true })
+
+vim.api.nvim_create_user_command("Darkmode", function()
+  vim.cmd("colorscheme tokyonight-night") -- Example command
+  vim.cmd("LualineTheme horizon") -- Another example command
+end, {})
+
+vim.api.nvim_set_keymap("n", "<leader>D", ":Darkmode<CR>", { noremap = true, silent = true })
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 
 -- Function to delete trailing whitespace
 local function delete_trailing_ws()

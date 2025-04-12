@@ -58,4 +58,21 @@ return {
 	{
 		"b0o/schemastore.nvim",
 	},
+	{
+		"nvzone/typr",
+		cmd = "TyprStats",
+		dependencies = "nvzone/volt",
+		opts = {},
+	},
+	-- {
+	-- 	"folke/zen-mode.nvim",
+	-- 	config = function()
+	-- 		require("zen-mode").toggle({
+	-- 			window = {
+	-- 				width = 0.9, -- width will be 85% of the editor width
+	-- 			},
+	-- 		})
+	-- 		vim.keymap.set("n", "<leader>zm", ":ZenMode<CR>")
+	-- 	end,
+	-- },
 }
