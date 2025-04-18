@@ -1,31 +1,56 @@
 return {
-	{
-		"williamboman/mason.nvim",
-		config = function()
-			require("mason").setup()
-		end,
-	},
-	{
+	-- Main LSP Configuration
+	"neovim/nvim-lspconfig",
+	dependencies = {
+		-- Automatically install LSPs and related tools to stdpath for Neovim
+		-- Mason must be loaded before its dependents so we need to set it up here.
+		-- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
+		{ "williamboman/mason.nvim", opts = {} },
 		"williamboman/mason-lspconfig.nvim",
-		config = function()
-			require("mason-lspconfig").setup({
-				ensure_installed = { "lua_ls" },
-			})
-		end,
+		"WhoIsSethDaniel/mason-tool-installer.nvim",
+		"linrongbin16/lsp-progress.nvim",
+
+		-- Useful status updates for LSP.
+		{ "j-hui/fidget.nvim", opts = {} },
 	},
-	{
-		"neovim/nvim-lspconfig",
-		config = function()
-			local capabilities = require("cmp_nvim_lsp").defaut_capabilities
-			-- capabilities.textDocument.completion.completionItem.snippetSupport = true
-			local lspconfig = require("lspconfig")
-			lspconfig.lua_ls.setup({
+	config = function()
+		local original_caps = vim.lsp.protocol.make_client_capabilities()
+		local capabilities = require("blink.cmp").get_lsp_capabilities(original_caps)
+
+		local servers = {
+			bashls = {},
+			marksman = {},
+			-- clangd = {},
+			-- gopls = {},
+			-- pyright = {},
+			-- rust_analyzer = {},
+			-- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
+			--
+			-- Some languages (like typescript) have entire language plugins that can be useful:
+			--    https://github.com/pmizio/typescript-tools.nvim
+			--
+			-- But for many setups, the LSP (`ts_ls`) will work just fine
+			ts_ls = {
 				capabilities = capabilities,
-			})
-			lspconfig.ts_ls.setup({
+			},
+			--
+
+			lua_ls = {
 				capabilities = capabilities,
-			})
-			lspconfig.jsonls.setup({
+				-- cmd = { ... },
+				-- filetypes = { ... },
+				-- capabilities = {},
+				-- settings = {
+				--   Lua = {
+				--     completion = {
+				--       callSnippet = 'Replace',
+				--     },
+				--     -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
+				--     -- diagnostics = { disable = { 'missing-fields' } },
+				--   },
+				-- },
+			},
+			jsonls = {
 				capabilities = capabilities,
 				settings = {
 					json = {
@@ -39,8 +64,8 @@ return {
 						validate = { enable = true },
 					},
 				},
-			})
-			lspconfig.nil_ls.setup({
+			},
+			nil_ls = {
 				capabilities = capabilities,
 				settings = {
 					formatting = {
@@ -49,26 +74,41 @@ return {
 						},
 					},
 				},
-			})
-			lspconfig.taplo.setup({
-				capabilities = capabilities
-			})
-			vim.lsp.inlay_hint.enable(true)
-			vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
-			vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
-			vim.keymap.set("n", "gD", vim.lsp.buf.declaration, {})
-			vim.keymap.set("n", "gr", vim.lsp.buf.references, {})
-			vim.keymap.set({ "n", "v" }, "<leader>f", function()
-				vim.lsp.buf.format({ async = true })
-			end, {})
-			vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, {})
-			vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, {})
-		end,
-	},
-	{
-		"linrongbin16/lsp-progress.nvim",
-		config = function()
-			require("lsp-progress").setup()
-		end,
-	},
+			},
+			taplo = {
+				capabilities = capabilities,
+			},
+		}
+		local ensure_installed = vim.tbl_keys(servers or {})
+        vim.list_extend(ensure_installed, {
+            "stylua", -- Used to format Lua code
+            "prettierd", -- Used to format javascript and typescript code
+        })
+        require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+		require("mason-lspconfig").setup({
+            ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
+            automatic_installation = false,
+            handlers = {
+                function(server_name)
+                    local server = servers[server_name] or {}
+                    -- This handles overriding only values explicitly passed
+                    -- by the server configuration above. Useful when disabling
+                    -- certain features of an LSP (for example, turning off formatting for ts_ls)
+                    server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+                    require("lspconfig")[server_name].setup(server)
+                end,
+            },
+        })
+
+		vim.lsp.inlay_hint.enable(true)
+		vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
+		vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
+		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, {})
+		vim.keymap.set("n", "gr", vim.lsp.buf.references, {})
+		vim.keymap.set({ "n", "v" }, "<leader>f", function()
+			vim.lsp.buf.format({ async = true })
+		end, {})
+		vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, {})
+		vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, {})
+	end,
 }
