@@ -2,8 +2,7 @@ return {
   {
     "saghen/blink.compat",
     -- use the latest release, via version = '*', if you also use the latest release for blink.cmp
-    version = "*",
-    -- lazy.nvim will automatically load the plugin when it's required by blink.cmp
+    version = "*", -- lazy.nvim will automatically load the plugin when it's required by blink.cmp
     lazy = true,
     -- make sure to set opts so that lazy.nvim calls blink.compat's setup
     opts = {},
@@ -68,7 +67,7 @@ return {
               return vim.tbl_contains(
               -- Enable emoji completion only for git commits and markdown.
               -- By default, enabled for all file-types.
-                { "gitcommit", "markdown" },
+                { "gitcommit", "markdown", "json", "jsonc" },
                 vim.o.filetype
               )
             end,

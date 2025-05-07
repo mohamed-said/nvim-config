@@ -22,10 +22,16 @@ return {
 			underline = { severity = vim.diagnostic.severity.ERROR },
 			signs = {
 				text = {
-					[vim.diagnostic.severity.ERROR] = "󰅚 ",
+					[vim.diagnostic.severity.ERROR] = "",
 					[vim.diagnostic.severity.WARN] = "󰀪 ",
 					[vim.diagnostic.severity.INFO] = "󰋽 ",
 					[vim.diagnostic.severity.HINT] = "󰌶 ",
+					-- -- -- -- -- -- -- -- -- -- -- -- --
+					-- [vim.diagnostic.severity.ERROR] = "󰅚 ",
+					-- [vim.diagnostic.severity.ERROR] = " ",
+					-- [vim.diagnostic.severity.WARN] = " ",
+					-- [vim.diagnostic.severity.INFO] = "󰠠 ",
+					-- [vim.diagnostic.severity.HINT] = " ",
 				},
 			},
 			virtual_text = {
@@ -47,6 +53,23 @@ return {
 		local capabilities = require("blink.cmp").get_lsp_capabilities(original_caps)
 
 		local servers = {
+			rust_analyzer = {
+				capabilities = capabilities,
+				settings = {
+					["rust-analyzer"] = {
+						-- clippy instead of just cargo check
+						check = {
+							command = "clippy",
+						},
+						cargo = {
+							features = "all",
+						},
+						rustfmt = {
+							extraArgs = { "+nightly" },
+						},
+					},
+				},
+			},
 			bashls = {},
 			marksman = {},
 			-- clangd = {},
