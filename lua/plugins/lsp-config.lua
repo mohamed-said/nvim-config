@@ -53,29 +53,6 @@ return {
 		local capabilities = require("blink.cmp").get_lsp_capabilities(original_caps)
 
 		local servers = {
-			-- rust_analyzer = {
-			-- 	capabilities = capabilities,
-			-- 	settings = {
-			-- 		["rust-analyzer"] = {
-			-- 			-- clippy instead of just cargo check
-			-- 			check = {
-			-- 				command = "clippy",
-			-- 			},
-			-- 			cargo = {
-			-- 				features = "all",
-			-- 				loadOutDirsFromCheck = true,
-			-- 				target = "x86_64-pc-window-gnu",
-			-- 			},
-			-- 			extraEnv = {
-			-- 				CARGO_CFG_TARGET_OS = "windows",
-			-- 				CARGO_CFG_WINDOWS = "1",
-			-- 			},
-			-- 			rustfmt = {
-			-- 				extraArgs = { "+nightly" },
-			-- 			},
-			-- 		},
-			-- 	},
-			-- },
 			bashls = {},
 			marksman = {},
 			-- clangd = {},
