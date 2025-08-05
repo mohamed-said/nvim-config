@@ -53,23 +53,29 @@ return {
 		local capabilities = require("blink.cmp").get_lsp_capabilities(original_caps)
 
 		local servers = {
-			rust_analyzer = {
-				capabilities = capabilities,
-				settings = {
-					["rust-analyzer"] = {
-						-- clippy instead of just cargo check
-						check = {
-							command = "clippy",
-						},
-						cargo = {
-							features = "all",
-						},
-						rustfmt = {
-							extraArgs = { "+nightly" },
-						},
-					},
-				},
-			},
+			-- rust_analyzer = {
+			-- 	capabilities = capabilities,
+			-- 	settings = {
+			-- 		["rust-analyzer"] = {
+			-- 			-- clippy instead of just cargo check
+			-- 			check = {
+			-- 				command = "clippy",
+			-- 			},
+			-- 			cargo = {
+			-- 				features = "all",
+			-- 				loadOutDirsFromCheck = true,
+			-- 				target = "x86_64-pc-window-gnu",
+			-- 			},
+			-- 			extraEnv = {
+			-- 				CARGO_CFG_TARGET_OS = "windows",
+			-- 				CARGO_CFG_WINDOWS = "1",
+			-- 			},
+			-- 			rustfmt = {
+			-- 				extraArgs = { "+nightly" },
+			-- 			},
+			-- 		},
+			-- 	},
+			-- },
 			bashls = {},
 			marksman = {},
 			-- clangd = {},
@@ -137,6 +143,10 @@ return {
 			},
 		}
 		local ensure_installed = vim.tbl_keys(servers or {})
+		-- Remove rust-analyzer from auto-installation since rustaceanvim manages it
+		ensure_installed = vim.tbl_filter(function(tool)
+			return tool ~= "rust_analyzer"
+		end, ensure_installed)
 		vim.list_extend(ensure_installed, {
 			"stylua", -- Used to format Lua code
 			"prettierd", -- Used to format javascript and typescript code
@@ -147,6 +157,10 @@ return {
 			automatic_installation = false,
 			handlers = {
 				function(server_name)
+					-- Skip rust_analyzer since rustaceanvim manages it
+					if server_name == "rust_analyzer" then
+						return
+					end
 					local server = servers[server_name] or {}
 					-- This handles overriding only values explicitly passed
 					-- by the server configuration above. Useful when disabling
