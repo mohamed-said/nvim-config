@@ -107,6 +107,12 @@ vim.api.nvim_create_user_command("Darkmode", function()
 end, {})
 
 vim.api.nvim_set_keymap("n", "<leader>D", ":Darkmode<CR>", { noremap = true, silent = true })
+
+-- Save hotkey
+vim.api.nvim_set_keymap("n", "<leader>w", ":w<CR>", { noremap = true, silent = true })
+
+
+vim.api.nvim_set_keymap("n", "<leader>o", ":noh<CR>", {noremap = true, silent = true})
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 
