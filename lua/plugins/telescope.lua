@@ -1,7 +1,6 @@
 return {
 	{
 		"nvim-telescope/telescope.nvim",
-		tag = "0.1.8",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
 			local builtin = require("telescope.builtin")
@@ -19,6 +18,17 @@ return {
 		config = function()
 			-- This is your opts table
 			require("telescope").setup({
+				defaults = {
+					preview = { treesitter = false },
+					file_ignore_patterns = {
+						"node_modules/",
+						"dist/",
+						"build/",
+						".next/",
+						".turbo/",
+						".git/",
+					},
+				},
 				pickers = {
 					live_grep = {
 						on_input_filter_cb = function(query)

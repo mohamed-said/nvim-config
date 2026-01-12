@@ -9,9 +9,10 @@ return {
 		"williamboman/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 		"linrongbin16/lsp-progress.nvim",
+		"b0o/schemastore.nvim",
 
 		-- Useful status updates for LSP.
-		{ "j-hui/fidget.nvim",       opts = {} },
+		{ "j-hui/fidget.nvim", opts = {} },
 	},
 	config = function()
 		-- Diagnostic Config
@@ -72,18 +73,20 @@ return {
 
 			lua_ls = {
 				capabilities = capabilities,
-				-- cmd = { ... },
-				-- filetypes = { ... },
-				-- capabilities = {},
-				-- settings = {
-				--   Lua = {
-				--     completion = {
-				--       callSnippet = 'Replace',
-				--     },
-				--     -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-				--     -- diagnostics = { disable = { 'missing-fields' } },
-				--   },
-				-- },
+				settings = {
+					Lua = {
+						completion = {
+							callSnippet = "Replace",
+						},
+						diagnostics = {
+							globals = { "vim" },
+						},
+						workspace = {
+							library = vim.api.nvim_get_runtime_file("", true),
+							checkThirdParty = false,
+						},
+					},
+				},
 			},
 			jsonls = {
 				capabilities = capabilities,
@@ -114,9 +117,17 @@ return {
 				capabilities = capabilities,
 			},
 			clangd = {
+				capabilities = capabilities,
 				-- Optional: Customize clangd settings (e.g., using a specific config file)
 				cmd = { "clangd", "--background-index" },
 				filetypes = { "c", "cpp", "cc", "h", "hpp", "objc", "objcpp" }, -- Define the file types it should work with
+			},
+			eslint = {
+				capabilities = capabilities,
+				on_attach = function(client, _)
+					client.server_capabilities.documentFormattingProvider = false
+					client.server_capabilities.documentRangeFormattingProvider = false
+				end,
 			},
 		}
 		local ensure_installed = vim.tbl_keys(servers or {})
@@ -134,18 +145,40 @@ return {
 			automatic_installation = false,
 			handlers = {
 				function(server_name)
-					-- Skip rust_analyzer since rustaceanvim manages it
 					if server_name == "rust_analyzer" then
 						return
 					end
+
+					-- ✅ none-ls/null-ls is not an lspconfig server
+					if server_name == "null-ls" or server_name == "none-ls" then
+						return
+					end
+
+					local lspconfig = require("lspconfig")
+					if not lspconfig[server_name] then
+						return
+					end
+
 					local server = servers[server_name] or {}
-					-- This handles overriding only values explicitly passed
-					-- by the server configuration above. Useful when disabling
-					-- certain features of an LSP (for example, turning off formatting for ts_ls)
 					server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-					require("lspconfig")[server_name].setup(server)
+					lspconfig[server_name].setup(server)
 				end,
 			},
+
+			-- handlers = {
+			-- 	function(server_name)
+			-- 		-- Skip rust_analyzer since rustaceanvim manages it
+			-- 		if server_name == "rust_analyzer" then
+			-- 			return
+			-- 		end
+			-- 		local server = servers[server_name] or {}
+			-- 		-- This handles overriding only values explicitly passed
+			-- 		-- by the server configuration above. Useful when disabling
+			-- 		-- certain features of an LSP (for example, turning off formatting for ts_ls)
+			-- 		server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+			-- 		require("lspconfig")[server_name].setup(server)
+			-- 	end,
+			-- },
 		})
 
 		vim.lsp.inlay_hint.enable(true)
