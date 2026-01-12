@@ -52,6 +52,7 @@ return {
 
 		local original_caps = vim.lsp.protocol.make_client_capabilities()
 		local capabilities = require("blink.cmp").get_lsp_capabilities(original_caps)
+		local ts_util = require("lspconfig.util")
 
 		local servers = {
 			bashls = {},
@@ -66,8 +67,19 @@ return {
 			--    https://github.com/pmizio/typescript-tools.nvim
 			--
 			-- But for many setups, the LSP (`ts_ls`) will work just fine
+
 			ts_ls = {
 				capabilities = capabilities,
+				root_dir = ts_util.root_pattern("tsconfig.json", "jsconfig.json", "package.json"),
+				single_file_support = false,
+				on_attach = function(client, bufnr)
+					-- you format with prettierd via none-ls
+					client.server_capabilities.documentFormattingProvider = false
+					client.server_capabilities.documentRangeFormattingProvider = false
+
+					-- monorepo perf
+					vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
+				end,
 			},
 			--
 
