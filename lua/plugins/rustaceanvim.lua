@@ -29,6 +29,7 @@ return {
 							allTargets = true
 						},
 						check = {
+							command = "clippy",
 							allTargets = true,
 						},
 						procMacro = { enable = true },
@@ -38,7 +39,6 @@ return {
 							typeHints = true, -- Show type hints
 							parameterHints = true, -- Show parameter hints
 						},
-						diagnostics = {},
 					},
 				},
 			},

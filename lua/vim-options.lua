@@ -1,3 +1,7 @@
+-- Disable Neovim 0.11's built-in LSP auto-start for rust-analyzer
+-- (rustaceanvim handles this)
+vim.lsp.enable('rust_analyzer', false)
+
 vim.cmd("set encoding=UTF-8")
 vim.cmd("set cursorline")
 
@@ -16,7 +20,7 @@ vim.cmd("set expandtab")
 vim.cmd("set incsearch")
 vim.cmd("set hlsearch")
 
-vim.cmd("set regexpengine=1")
+-- vim.cmd("set regexpengine=1") -- REMOVED: old regex engine is slow with TypeScript
 vim.cmd("set backspace=indent,eol,start")
 
 vim.cmd("set fillchars+=vert:│")

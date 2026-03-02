@@ -87,8 +87,6 @@ return {
             opts = {},
             should_show_items = function()
               return vim.tbl_contains(
-              -- Enable emoji completion only for git commits and markdown.
-              -- By default, enabled for all file-types.
                 { "sql" },
                 vim.o.filetype
               )

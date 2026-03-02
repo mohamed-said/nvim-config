@@ -52,53 +52,20 @@ return {
 
 		local original_caps = vim.lsp.protocol.make_client_capabilities()
 		local capabilities = require("blink.cmp").get_lsp_capabilities(original_caps)
-		local ts_util = require("lspconfig.util")
+		local lsp_util = require("lspconfig.util")
 
 		local servers = {
 			bashls = {},
 			marksman = {},
-			-- clangd = {},
-			-- gopls = {},
-			-- pyright = {},
-			-- rust_analyzer = {},
-			-- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-			--
-			-- Some languages (like typescript) have entire language plugins that can be useful:
-			--    https://github.com/pmizio/typescript-tools.nvim
-			--
-			-- But for many setups, the LSP (`ts_ls`) will work just fine
-
 			ts_ls = {
 				capabilities = capabilities,
-				root_dir = ts_util.root_pattern("tsconfig.json", "jsconfig.json", "package.json"),
+				root_dir = lsp_util.root_pattern("tsconfig.json", "jsconfig.json", "package.json"),
 				single_file_support = false,
 				on_attach = function(client, bufnr)
-					-- you format with prettierd via none-ls
 					client.server_capabilities.documentFormattingProvider = false
 					client.server_capabilities.documentRangeFormattingProvider = false
-
-					-- monorepo perf
 					vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
 				end,
-			},
-			--
-
-			lua_ls = {
-				capabilities = capabilities,
-				settings = {
-					Lua = {
-						completion = {
-							callSnippet = "Replace",
-						},
-						diagnostics = {
-							globals = { "vim" },
-						},
-						workspace = {
-							library = vim.api.nvim_get_runtime_file("", true),
-							checkThirdParty = false,
-						},
-					},
-				},
 			},
 			jsonls = {
 				capabilities = capabilities,
@@ -136,10 +103,20 @@ return {
 			},
 			eslint = {
 				capabilities = capabilities,
+				flags = {
+					allow_incremental_sync = false,
+					debounce_text_changes = 1000,
+					exit_timeout = 1500,
+				},
 				on_attach = function(client, _)
 					client.server_capabilities.documentFormattingProvider = false
 					client.server_capabilities.documentRangeFormattingProvider = false
 				end,
+			},
+			terraformls = {
+				capabilities = capabilities,
+				filetypes = { "terraform", "terraform-vars" },
+				root_dir = lsp_util.root_pattern(".terraform", ".git"),
 			},
 		}
 		local ensure_installed = vim.tbl_keys(servers or {})
@@ -176,21 +153,6 @@ return {
 					lspconfig[server_name].setup(server)
 				end,
 			},
-
-			-- handlers = {
-			-- 	function(server_name)
-			-- 		-- Skip rust_analyzer since rustaceanvim manages it
-			-- 		if server_name == "rust_analyzer" then
-			-- 			return
-			-- 		end
-			-- 		local server = servers[server_name] or {}
-			-- 		-- This handles overriding only values explicitly passed
-			-- 		-- by the server configuration above. Useful when disabling
-			-- 		-- certain features of an LSP (for example, turning off formatting for ts_ls)
-			-- 		server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-			-- 		require("lspconfig")[server_name].setup(server)
-			-- 	end,
-			-- },
 		})
 
 		vim.lsp.inlay_hint.enable(true)
@@ -199,7 +161,7 @@ return {
 		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, {})
 		vim.keymap.set("n", "gr", vim.lsp.buf.references, {})
 		vim.keymap.set({ "n", "v" }, "<leader>f", function()
-			vim.lsp.buf.format({ async = true })
+			require("conform").format({ async = true })
 		end, {})
 		vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, {})
 		vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, {})
