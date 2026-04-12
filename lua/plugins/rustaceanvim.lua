@@ -22,12 +22,15 @@ return {
 				default_settings = {
 					-- rust-analyzer language server configuration
 					["rust-analyzer"] = {
-						cargo = {
-							loadOutDirsFromCheck = true,
-							-- target = "x86_64-pc-windows-gnu",
-							runBuildScripts = false, -- Disable build scripts, including `crateGraph` task
-							allTargets = true
+					cargo = {
+						loadOutDirsFromCheck = true,
+						-- target = "x86_64-pc-windows-gnu",
+						runBuildScripts = true,
+						allTargets = true,
+						buildScripts = {
+							enable = true,
 						},
+					},
 						check = {
 							command = "clippy",
 							allTargets = true,
