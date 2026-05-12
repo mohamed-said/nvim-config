@@ -103,13 +103,13 @@ vim.api.nvim_create_user_command("Lightmode", function()
   vim.cmd("LualineTheme ayu_light") -- Another example command
 end, {})
 
-vim.api.nvim_set_keymap("n", "<leader>L", ":Lightmode<CR>", { noremap = true, silent = true })
 
 vim.api.nvim_create_user_command("Darkmode", function()
-  vim.cmd("colorscheme tokyonight-night") -- Example command
+  vim.cmd("colorscheme Oshen") -- Example command
   vim.cmd("LualineTheme horizon") -- Another example command
 end, {})
 
+vim.api.nvim_set_keymap("n", "<leader>L", ":Lightmode<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<leader>D", ":Darkmode<CR>", { noremap = true, silent = true })
 
 -- Save hotkey

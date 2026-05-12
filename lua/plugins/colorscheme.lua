@@ -26,8 +26,7 @@ return {
 	},
 	{
 		"folke/tokyonight.nvim",
-		lazy = false,
-		priority = 1000,
+		lazy = true,
 		opts = {
 			transparent = true,
 			styles = {
@@ -35,10 +34,6 @@ return {
 				floats = "transparent",
 			},
 		},
-		-- opts = {},
-		config = function()
-			vim.cmd([[colorscheme tokyonight-night]])
-		end,
 	},
 	{ "EdenEast/nightfox.nvim" },
 	{
@@ -64,5 +59,16 @@ return {
 			flavour = "mocha", -- latte, frappe, macchiato, mocha
 			transparent_background = false,
 		},
+	},
+	{
+		"54L1M/Oshen.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("oshen").setup({
+				transparent = true, -- set false for opaque background
+			})
+			vim.cmd.colorscheme("Oshen")
+		end,
 	},
 }

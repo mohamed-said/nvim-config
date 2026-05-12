@@ -19,15 +19,17 @@ return {
 	{
 		"HiPhish/rainbow-delimiters.nvim",
 		config = function()
+			-- Use the same named highlight groups as indent-blankline so the
+			-- bracket colors and scope/indent lines stay in sync.
 			require("rainbow-delimiters.setup").setup({
-				strategy = {
-					-- ...
-				},
-				query = {
-					-- ...
-				},
 				highlight = {
-					-- ...
+					"RainbowRed",
+					"RainbowYellow",
+					"RainbowBlue",
+					"RainbowOrange",
+					"RainbowGreen",
+					"RainbowViolet",
+					"RainbowCyan",
 				},
 			})
 		end,

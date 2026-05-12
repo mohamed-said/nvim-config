@@ -8,7 +8,62 @@ return {
 	{
 		"lukas-reineke/indent-blankline.nvim",
 		main = "ibl",
-		opts = {},
+		dependencies = { "HiPhish/rainbow-delimiters.nvim" },
+		config = function()
+			-- These names are shared with rainbow-delimiters so both plugins
+			-- cycle through the same palette at the same nesting levels.
+			local rainbow_highlights = {
+				"RainbowRed",
+				"RainbowYellow",
+				"RainbowBlue",
+				"RainbowOrange",
+				"RainbowGreen",
+				"RainbowViolet",
+				"RainbowCyan",
+			}
+
+			local hooks = require("ibl.hooks")
+
+			-- Re-define colors every time the colorscheme changes so they
+			-- always override whatever the theme sets on these groups.
+			hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+				vim.api.nvim_set_hl(0, "RainbowRed",    { fg = "#E06C75" })
+				vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
+				vim.api.nvim_set_hl(0, "RainbowBlue",   { fg = "#61AFEF" })
+				vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
+				vim.api.nvim_set_hl(0, "RainbowGreen",  { fg = "#98C379" })
+				vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+				vim.api.nvim_set_hl(0, "RainbowCyan",   { fg = "#56B6C2" })
+			end)
+
+			require("ibl").setup({
+				indent = {
+					char = "│",
+					tab_char = "│",
+					highlight = rainbow_highlights,
+				},
+				scope = {
+					enabled = true,
+					show_start = true,
+					show_end = true,
+					highlight = rainbow_highlights,
+				},
+				exclude = {
+					filetypes = {
+						"help", "alpha", "dashboard", "neo-tree",
+						"Trouble", "lazy", "mason", "notify",
+						"toggleterm", "TelescopePrompt", "TelescopeResults",
+					},
+				},
+			})
+
+			-- Each scope underline takes its color from the rainbow-delimiters
+			-- extmark at that nesting level, so bracket and scope line match.
+			hooks.register(
+				hooks.type.SCOPE_HIGHLIGHT,
+				hooks.builtin.scope_highlight_from_extmark
+			)
+		end,
 	},
 	{
 		"numToStr/Comment.nvim",
