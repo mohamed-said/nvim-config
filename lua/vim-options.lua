@@ -25,6 +25,11 @@ vim.cmd("set backspace=indent,eol,start")
 
 vim.cmd("set fillchars+=vert:│")
 
+-- Global default border for all floating windows (Neovim 0.11+).
+-- Covers hover (K), signature help, diagnostics float, and any other float
+-- that doesn't set its own border explicitly.
+vim.o.winborder = "rounded"
+
 -- Run only once after coc install
 -- call coc#util#install()
 --
@@ -117,8 +122,10 @@ vim.api.nvim_set_keymap("n", "<leader>w", ":w<CR>", { noremap = true, silent = t
 
 
 vim.api.nvim_set_keymap("n", "<leader>o", ":noh<CR>", {noremap = true, silent = true})
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+
+vim.keymap.set("v", "<leader>y", '"*y', { noremap = true, silent = true, desc = "Yank selection to system clipboard" })
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 -- Function to delete trailing whitespace
 local function delete_trailing_ws()

@@ -25,13 +25,6 @@ return {
 				changedelete = { text = "~" },
 			},
 			signs_staged_enable = true,
-			current_line_blame  = true,
-			current_line_blame_opts = {
-				virt_text     = true,
-				virt_text_pos = "eol",
-				delay         = 800,
-			},
-			current_line_blame_formatter = " <author> · <author_time:%R> · <summary>",
 			word_diff   = false,
 			on_attach   = function(bufnr)
 				local gs = require("gitsigns")

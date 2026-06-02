@@ -4,7 +4,7 @@ return {
 		build = ":TSUpdate",
 		opts = {
 			auto_install = false,
-			ensure_installed = { "lua", "c", "rust", "cpp", "typescript", "tsx" },
+			ensure_installed = { "lua", "c", "rust", "cpp", "typescript", "tsx", "sql" },
 			highlight = {
 				enable = true,
 				disable = function(_, buf)

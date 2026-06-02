@@ -6,7 +6,7 @@ return {
 			require("lualine").setup({
 				options = {
 					icons_enabled = true,
-					theme = "ayu_dark",
+					theme = require("oshen.integrations.lualine").get(),
 					component_separators = { left = "", right = "" },
 					section_separators = { left = "", right = "" },
 					disabled_filetypes = {
@@ -64,6 +64,17 @@ return {
 	},
 	{
 		"j-hui/fidget.nvim",
-		opts = {},
+		opts = {
+			notification = {
+				window = {
+					-- winblend = 0 lets normal_hl control the background directly.
+					-- Since Oshen's transparent mode sets Normal to bg = NONE,
+					-- the window inherits that and shows the terminal wallpaper.
+					winblend  = 0,
+					normal_hl = "Normal",
+					border    = "none",
+				},
+			},
+		},
 	},
 }

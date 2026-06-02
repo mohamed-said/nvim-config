@@ -1,21 +1,26 @@
 return {
-  "stevearc/conform.nvim",
-  opts = {
-    format_on_save = {
-      timeout_ms = 2000,
-      lsp_fallback = false, -- important: don't fall back to LSP formatting
-    },
-    formatters_by_ft = {
-      javascript = { "prettierd" },
-      javascriptreact = { "prettierd" },
-      typescript = { "prettierd" },
-      typescriptreact = { "prettierd" },
-      markdown = { "prettierd" },
-      css = { "prettierd" },
-      html = { "prettierd" },
-      rust = { "rustfmt" },
-      yaml = { "prettierd" }
-    },
-  },
+	"stevearc/conform.nvim",
+	opts = {
+		format_on_save = {
+			timeout_ms = 3000,
+			lsp_fallback = false,
+		},
+		formatters_by_ft = {
+			javascript = { "biome", "prettierd", stop_after_first = true },
+			javascriptreact = { "biome", "prettierd", stop_after_first = true },
+			typescript = { "biome", "prettierd", stop_after_first = true },
+			typescriptreact = { "biome", "prettierd", stop_after_first = true },
+			json = { "biome", "prettierd", stop_after_first = true },
+			jsonc = { "biome", "prettierd", stop_after_first = true },
+			css = { "biome", "prettierd", stop_after_first = true },
+			markdown = { "prettierd" },
+			html = { "prettierd" },
+			yaml = { "prettierd" },
+			rust = { "rustfmt" },
+			sql = { "pg_format" },
+		},
+		formatters = {
+			biome = { require_cwd = true },
+		},
+	},
 }
-

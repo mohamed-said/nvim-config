@@ -118,6 +118,9 @@ return {
 				filetypes = { "terraform", "terraform-vars" },
 				root_dir = lsp_util.root_pattern(".terraform", ".git"),
 			},
+			postgres_lsp = {
+				capabilities = capabilities,
+			},
 		}
 		local ensure_installed = vim.tbl_keys(servers or {})
 		-- Remove rust-analyzer from auto-installation since rustaceanvim manages it
@@ -125,8 +128,10 @@ return {
 			return tool ~= "rust_analyzer"
 		end, ensure_installed)
 		vim.list_extend(ensure_installed, {
-			"stylua", -- Used to format Lua code
-			"prettierd", -- Used to format javascript and typescript code
+			"stylua",               -- Used to format Lua code
+			"prettierd",            -- Used to format javascript and typescript code
+			"postgres-language-server", -- SQL/PostgreSQL LSP
+			"pgformatter",          -- SQL formatter
 		})
 		require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 		require("mason-lspconfig").setup({
