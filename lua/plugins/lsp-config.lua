@@ -162,15 +162,8 @@ return {
 
 		vim.lsp.inlay_hint.enable(true)
 
-		-- Add borders to hover popups
-		vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-			border = "rounded",
-		})
-
-		-- Add borders to signature help popups
-		vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-			border = "rounded",
-		})
+		-- Borders for hover / signature help / diagnostic floats are handled
+		-- globally by `vim.o.winborder = "rounded"` in vim-options.lua.
 
 		vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
 		vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})

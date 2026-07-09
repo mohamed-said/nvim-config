@@ -75,14 +75,17 @@ vim.keymap.set("n", "<leader>i", function()
 end)
 
 -- Diagnostics
-vim.api.nvim_set_keymap(
-	"n",
-	"<space>e",
-	'<cmd>lua vim.diagnostic.open_float(0, {scope="line"})<CR>',
-	{ noremap = true, silent = true }
-)
-vim.api.nvim_set_keymap("n", "<space>ne", "<cmd>lua vim.diagnostic.goto_next()<CR>", {})
-vim.api.nvim_set_keymap("n", "<space>pe", "<cmd>lua vim.diagnostic.goto_prev()<CR>", {})
+vim.keymap.set("n", "<space>e", function()
+	vim.diagnostic.open_float({ scope = "line" })
+end, { silent = true, desc = "Open line diagnostics float" })
+
+vim.keymap.set("n", "<space>ne", function()
+	vim.diagnostic.jump({ count = 1, float = true })
+end, { silent = true, desc = "Next diagnostic" })
+
+vim.keymap.set("n", "<space>pe", function()
+	vim.diagnostic.jump({ count = -1, float = true })
+end, { silent = true, desc = "Previous diagnostic" })
 
 -- HexDump
 vim.keymap.set("n", "<leader>hd", ":%!xxd<CR>", { noremap = true, silent = true })

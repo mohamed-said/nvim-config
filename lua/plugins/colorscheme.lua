@@ -64,11 +64,19 @@ return {
 		"54L1M/Oshen.nvim",
 		lazy = false,
 		priority = 1000,
+		-- config = function()
+		-- 	require("oshen").setup({
+		-- 		transparent = true, -- set false for opaque background
+		-- 	})
+		-- 	vim.cmd.colorscheme("Oshen")
+		-- end,
+	},
+	{
+		"kbraggins/duskhaven.nvim",
+		lazy = false,
+		priority = 1000,
 		config = function()
-			require("oshen").setup({
-				transparent = true, -- set false for opaque background
-			})
-			vim.cmd.colorscheme("Oshen")
+			vim.cmd.colorscheme("duskhaven")
 		end,
 	},
 }
